@@ -51,31 +51,32 @@ func generateBulk(atomManager *nrc.AtomManager, moleculeID, moleculeDir, bulkID,
 	tmpMolecule.LoadFromFile(moleculePath)
 
 	tmpBulk := nrc.Bulk{}
-	tmpBulk.LoadFromFile(bulkPath)
+	//tmpBulk.LoadFromFile(bulkPath)
 
-	fmt.Println("-----")
-	for _, v := range tmpMolecule.MoleculeItems {
+	//fmt.Println("-----")
+	for k, v := range tmpMolecule.MoleculeItems {
+		fmt.Printf("#####(%v of %v)##### %s\n", k+1, len(tmpMolecule.MoleculeItems), v.AtomID)
 		if atomManager.HasEntry(v.ProviderID, v.AtomID) {
-			fmt.Println(v.AtomID)
+			//fmt.Printf("<-> fetching '%s'", v.AtomID)
 
 			tmpBulkItem := nrc.BulkItem{}
 			tmpDownload := bp.Download{}
 
-			fmt.Printf("</> EXEC >%s %s %s %s<\n", "nxatomize", v.ProviderID, "downinfo", v.AtomID)
+			fmt.Printf("</> EXEC >%s %s %s %s<\n", "nxatomize", "downinfo", v.ProviderID, v.AtomID)
 
-			providerCommand := exec.Command("nxatomize", v.ProviderID, "downinfo", v.AtomID)
+			providerCommand := exec.Command("nxatomize", "downinfo", v.ProviderID, v.AtomID)
 			output, err := providerCommand.Output()
 			if bp.GotError(err) {
 				fmt.Printf("<!> ERROR getting downinfo of: '%s'\n", v.AtomID)
 			} else {
-				fmt.Printf("{%s}", output)
+				//fmt.Printf("{%s}", output)
 				fmt.Printf("<-> done getting downinfo of: '%s'\n", v.AtomID)
 			}
 			lines := strings.Split(string(output), "\n")
 			lastLine := bp.StringAtIndex(len(lines)-2, lines) // -2 since output ends with the seperator
 			//lastLine := lines[0]
 			if (lastLine != "") && !strings.HasPrefix(lastLine, "<") {
-				fmt.Printf(">>>%s<<<\n", lastLine)
+				fmt.Printf("<~> %s\n", lastLine)
 				downinfos := strings.SplitN(lastLine, "|", 2)
 				if len(downinfos) >= 2 {
 					tmpDownload.URL = downinfos[0]
@@ -93,7 +94,7 @@ func generateBulk(atomManager *nrc.AtomManager, moleculeID, moleculeDir, bulkID,
 			fmt.Printf("<!> WARNING unable to resolve Atom '%s' via '%s' Provider\n", v.AtomID, v.ProviderID)
 			//TODO do wildcard search ?
 		}
-		fmt.Println("-----")
+		//fmt.Println("-----")
 	}
 	tmpBulk.SaveToFile(bulkPath)
 
