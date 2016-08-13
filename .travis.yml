@@ -1,0 +1,19 @@
+language: go
+go:
+- 1.6
+install:
+- go get github.com/nexustix/boilerplate
+- go get github.com/nxReplicator/nxReplicatorCommon
+before_deploy:
+- env GOOS=linux GOARCH=amd64 go build -o ${HOME}/dist/linux64/nxcrunch github.com/nxReplicator/nxcrunch
+- env GOOS=windows GOARCH=amd64 go build -o ${HOME}/dist/windows64/nxcrunch.exe github.com/nxReplicator/nxcrunch
+deploy:
+  provider: releases
+  api_key:
+    secure: ZHWygn5O9L2QSRiRY5pMHZaORx9d1ASmKrjMz8PzQMv895FVZKyATzXzGZ8aWMN+pJ53k5YGCm21oKhTW+4J0FsQIT/m9niI5rge6ethUUwj1LN51A1XLQ+yj0RnklEVpB5Xr0gQgUZOpoO1E0HAz3eJbUd4BeJCvHgCw4ODGPWl6HfDi7D6nWq145EriWiKeRcF5Ryyq3w6FUtXYHZX9kf2hfPWr7nPJaIhNWiQC1/xKzFryjigiHckQfZ8PtOBbI0I9hO9gjsQgf2nkIizXovi/z7g7D4TENjc+ycTktEvlb891H9CcAVG2WFWqmHl9dsUa9gbeR4yLDDimYKj8Yeu0OI9zsNuLrUX43ylC2/u6SLIQ8LSwRnmo4/0txlDSdMugVL8KmKSTwFWlaUG00sAdU7DdplLCaJOswdDQuWV3w/KcYAJWPW/04yItFPEwg+8IKXufzFDHjq/3iVIrOOQ0ajldMoPwT/QrPEqmDxko/Khnxj2gXica+gRiCPH/Z7m4z7MUKwMma5wa2kzVgGmb81bRP9RPvt3lvolf9kluV8tyCwDfAbjNyc9e/MjcoJN8ZkTuCYm1MC2IL71ZA2nS3vntXA7A3vDkR1F2Fn6B5so9aVq4rtPSJvPTYMdJ4kHOO/kf33COX87mU/SNVYsDxFosPMMgbiqLcEp5rk=
+  file:
+    - "${HOME}/dist/windows64/nxcrunch.exe"
+    - "${HOME}/dist/linux64/nxcrunch"
+  skip_cleanup: true
+  on:
+    tags: true
