@@ -15,7 +15,8 @@ import (
 //nxcrunch generate amazingMolecule amazingBulk
 
 func main() {
-	fmt.Printf("Hello World Mk II\n")
+	version := "V.0-1-0"
+	fmt.Printf("<-> NxCrunch Version: %s\n", version)
 
 	args := os.Args
 
